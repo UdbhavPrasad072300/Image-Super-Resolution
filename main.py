@@ -46,6 +46,12 @@ if __name__ == "__main__":
     # out = D(out)
     # print(out.size())
 
+    # Train
+
+    pass
+
+    # Save
+
     torch.save(G, './models/sr-g.pt')
     torch.save(D, './models/sr-d.pt')
 
