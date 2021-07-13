@@ -5,8 +5,9 @@ import torch
 import src.config as config
 from src.data.dataset import get_dataloader
 from src.models.model import Generator, Discriminator
-from src.models.train import train
-from src.models.loss import Loss
+from src.models.train import train_generator, train_SRGAN
+from src.models.loss import Loss, get_perceptual_loss
+from src.models.test import Test_Model_Inputs
 from src.visualization.visualize import plot_sequential
 
 logging.basicConfig(filename="./logs/app.log", format='%(asctime)s %(message)s', filemode='w')
@@ -19,6 +20,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info("Device being used: {}".format(DEVICE))
 
 if __name__ == "__main__":
+
     # Data
 
     train_folder = "./data/raw/cars_test/cars_test/"
@@ -38,17 +40,20 @@ if __name__ == "__main__":
     print(D)
 
     criterion = Loss()
+    G_optimizer = torch.optim.Adam(G.parameters(), lr=config.LR)
+    D_optimizer = torch.optim.Adam(D.parameters(), lr=config.LR)
 
-    # tensor = torch.rand(2, 3, 256, 256).to(DEVICE)
-    # out = G(tensor)
-    # print(out.size())
+    # Test Model
 
-    # out = D(out)
-    # print(out.size())
+    G_out, D_out = Test_Model_Inputs(G, D, DEVICE=DEVICE)
+
+    print("Generator Output Size: ", G_out.size())
+    print("Discriminator Output Size: ", D_out.size())
 
     # Train
 
-    pass
+    G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, config, DEVICE=DEVICE)
+    G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, criterion, G_optimizer, D_optimizer, config, DEVICE=DEVICE)
 
     # Save
 

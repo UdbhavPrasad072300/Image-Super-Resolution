@@ -1,7 +1,7 @@
 import torch
 
 
-def train(model, train_loader, criterion, optimizer, config, DEVICE="cpu"):
+def train_generator(model, train_loader, criterion, optimizer, config, DEVICE="cpu"):
     loss_hist = {"train loss": []}
 
     for epoch in range(1, config.NUM_EPOCHES + 1):
@@ -9,13 +9,13 @@ def train(model, train_loader, criterion, optimizer, config, DEVICE="cpu"):
 
         epoch_train_loss = 0
 
-        for batch_idx, (img, ) in enumerate(train_loader):
-            img = img.to(DEVICE)
-            labels = labels.to(DEVICE)
+        for batch_idx, (original_img, train_img) in enumerate(train_loader):
+            original_img = original_img.to(DEVICE)
+            train_img = train_img.to(DEVICE)
 
-            fake_image = model(img)
+            fake_img = model(train_img)
 
-            loss = criterion(preds, labels)
+            loss = criterion(fake_img, original_img)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -28,4 +28,8 @@ def train(model, train_loader, criterion, optimizer, config, DEVICE="cpu"):
         print("Epoch: {} Train mean loss: {:.8f}".format(epoch, epoch_train_loss))
         print("-------------------------------------------------")
 
-    return loss_hist
+    return model, loss_hist
+
+
+def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, d_optimizer, config, DEVICE="cpu"):
+    return

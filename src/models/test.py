@@ -1,25 +1,13 @@
 import torch
 
 
-def test():
+def Test_Model_Inputs(G, D, DEVICE="cpu"):
     with torch.no_grad():
-        model.eval()
+        G.eval().to(DEVICE)
+        D.eval().to(DEVICE)
 
-        y_true_test = []
-        y_pred_test = []
+        tensor = torch.rand(2, 3, 256, 256).to(DEVICE)
 
-        for batch_idx, (img, labels) in enumerate(testloader):
-            img = img.to(device)
-            label = label.to(device)
-
-            preds, _ = model(img)
-
-            y_pred_test.extend(preds.detach().argmax(dim=-1).tolist())
-            y_true_test.extend(labels.detach().tolist())
-
-        total_correct = len([True for x, y in zip(y_pred_test, y_true_test) if x == y])
-        total = len(y_pred_test)
-        accuracy = total_correct * 100 / total
-
-        print("Test Accuracy%: ", accuracy, "==", total_correct, "/", total)
-    return
+        G_out = G(tensor)
+        D_out = D(G_out)
+    return G_out, D_out

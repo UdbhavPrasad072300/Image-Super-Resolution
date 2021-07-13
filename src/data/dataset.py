@@ -10,15 +10,16 @@ class CarsDataSet(Dataset):
         self.data_path = path
 
         image_folder = os.listdir(self.data_path)
-        self.train_dataset = [[self.data_path + image] for image in image_folder]
+        self.train_dataset = [self.data_path + image for image in image_folder ]
 
         self.original_transform = transforms.Compose([
-            transforms.Resize(512),
+            transforms.Resize((512, 512)),
             transforms.ToTensor()
         ])
 
-        self.sr_transform = transforms.Compose([
-            transforms.Resize(512),
+        self.lr_transform = transforms.Compose([
+            transforms.Resize((128, 128)),
+            transforms.
             transforms.ToTensor()
         ])
 
@@ -29,8 +30,12 @@ class CarsDataSet(Dataset):
         data = self.train_dataset[idx]
         image = Image.open(data)
         original_image = self.original_transform(image)
-        sr_image = self.sr_transform(image)
-        return original_image, sr_image, idx
+        sr_image = self.lr_transform(image)
+        if original_image.size(0) == 1:
+            original_image = original_image.repeat(3, 1, 1)
+            sr_image = sr_image.repeat(3, 1, 1)
+
+        return original_image, sr_image
 
 
 def get_dataset(train_directory, test_directory):
