@@ -13,12 +13,12 @@ class CarsDataSet(Dataset):
         self.train_dataset = [self.data_path + image for image in image_folder ]
 
         self.original_transform = transforms.Compose([
-            transforms.Resize((512, 512)),
+            transforms.Resize((256, 256)),
             transforms.ToTensor()
         ])
 
         self.lr_transform = transforms.Compose([
-            transforms.Resize((128, 128)),
+            transforms.Resize((64, 64)),
             transforms.
             transforms.ToTensor()
         ])

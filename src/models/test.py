@@ -1,7 +1,7 @@
 import torch
 
 
-def Test_Model_Inputs(G, D, DEVICE="cpu"):
+def test_model_inputs(G, D, DEVICE="cpu"):
     with torch.no_grad():
         G.eval().to(DEVICE)
         D.eval().to(DEVICE)
