@@ -16,21 +16,10 @@ class Loss(nn.Module):
         self.content_loss = None
 
         self.model_layers = torchvision.models.vgg.vgg19(pretrained=True).features.eval().to(DEVICE)
-        self.content_layers = ["1",
-                               "3",
-                               "6",
+        self.content_layers = ["3",
                                "8",
-                               "11",
-                               "13",
-                               "15",
                                "17",
-                               "20",
-                               "22",
-                               "24",
                                "26",
-                               "29",
-                               "31",
-                               "33",
                                "35"]
 
         for parameter in self.model_layers.parameters():
@@ -43,7 +32,7 @@ class Loss(nn.Module):
         self.perceptual_loss = get_perceptual_loss(sr_image, original_image)
         self.content_loss = self.get_content_loss(sr_image, original_image)
 
-        g_total_loss = self.content_loss + (10 ^ -3) * self.get_adversarial_loss(fake_pred, False) + \
+        g_total_loss = 0.006 * self.content_loss + (10 ^ -3) * self.get_adversarial_loss(fake_pred, False) + \
                        self.perceptual_loss
 
         d_total_loss = self.get_adversarial_loss(real_pred, True) + self.get_adversarial_loss(fake_pred, False)

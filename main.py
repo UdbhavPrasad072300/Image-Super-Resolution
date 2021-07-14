@@ -44,8 +44,8 @@ if __name__ == "__main__":
     # Training Objects
 
     criterion = Loss(DEVICE=DEVICE)
-    G_optimizer = torch.optim.Adam(G.parameters(), lr=config.LR)
-    D_optimizer = torch.optim.Adam(D.parameters(), lr=config.LR)
+    G_optimizer = torch.optim.Adam(G.parameters(), lr=config.G_LR)
+    D_optimizer = torch.optim.Adam(D.parameters(), lr=config.D_LR)
 
     # Test Model
 
@@ -56,7 +56,10 @@ if __name__ == "__main__":
 
     # Train
 
-    G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss(), G_optimizer, config, DEVICE=DEVICE)
+    #G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss(), G_optimizer, config, DEVICE=DEVICE)
+
+    torch.save(G, './models/sr_resnet-g.pt')
+
     G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, criterion, G_optimizer, D_optimizer, config, DEVICE=DEVICE)
 
     # Save
