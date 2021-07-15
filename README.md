@@ -1,6 +1,6 @@
 # Image-Super-Resolution
 
-Enhancing Image Resolution with Deep Learning
+Enhancing Image Resolution with SRGAN
 
 To Run: 
 
