@@ -28,7 +28,7 @@ class Generator(nn.Module):
         )
 
         self.residual_blocks = []
-        for n in range(4):
+        for n in range(3):
             self.residual_blocks.append(Residual_Block())
         self.residual_blocks = nn.Sequential(*self.residual_blocks)
 
