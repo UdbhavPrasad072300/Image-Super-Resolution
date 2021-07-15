@@ -13,7 +13,7 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
             original_img = original_img.to(DEVICE)
             train_img = train_img.to(DEVICE)
 
-            if DEVICE == "cuda":
+            if DEVICE.type == "cuda":
                 with torch.cuda.amp.autocast():
                     fake_img = model(train_img)
                     loss = criterion(fake_img, original_img)
@@ -29,7 +29,7 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
             epoch_train_loss += loss.item()
 
             if batch_idx + 1 == len(train_loader):
-                plot_tensors(fake_img)
+                plot_tensors(fake_img.to(original_img.dtype))
                 plot_tensors(original_img)
                 plot_tensors(train_img)
 
@@ -60,7 +60,7 @@ def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, 
             original_img = original_img.to(DEVICE)
             train_img = train_img.to(DEVICE)
 
-            if DEVICE == "cuda":
+            if DEVICE.type == "cuda":
                 with torch.cuda.amp.autocast():
                     fake_img = generator(train_img)
                     fake_pred = discriminator(fake_img)
@@ -86,7 +86,7 @@ def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, 
             epoch_d_train_loss += d_loss.item()
 
             if batch_idx + 1 == len(train_loader):
-                plot_tensors(fake_img)
+                plot_tensors(fake_img.to(original_img.dtype))
                 plot_tensors(original_img)
                 plot_tensors(train_img)
 

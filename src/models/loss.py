@@ -25,7 +25,7 @@ class Loss(nn.Module):
         for parameter in self.model_layers.parameters():
             parameter.requires_grad = False
 
-        self.bce_loss = nn.BCELoss()
+        self.bce_loss = nn.BCEWithLogitsLoss()
 
     def forward(self, sr_image, original_image, real_pred, fake_pred):
 
