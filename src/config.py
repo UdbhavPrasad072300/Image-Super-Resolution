@@ -1,3 +1,5 @@
+SEED = 0
+
 BATCH_SIZE = 32
 
 G_LR = 1e-5

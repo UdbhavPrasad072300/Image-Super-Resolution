@@ -14,7 +14,10 @@ logging.basicConfig(filename="./logs/app.log", format='%(asctime)s %(message)s',
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-torch.manual_seed(0)
+torch.manual_seed(config.SEED)
+torch.cuda.manual_seed(config.SEED)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info("Device being used: {}".format(DEVICE))
