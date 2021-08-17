@@ -27,10 +27,7 @@ class Generator(nn.Module):
             nn.PReLU()
         )
 
-        self.residual_blocks = []
-        for n in range(3):
-            self.residual_blocks.append(Residual_Block())
-        self.residual_blocks = nn.Sequential(*self.residual_blocks)
+        self.residual_blocks = nn.Sequential(*[Residual_Block() for n in range(3)])
 
         self.after = nn.Sequential(
             nn.Conv2d(64, 64, kernel_size=3, padding=1),
