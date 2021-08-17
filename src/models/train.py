@@ -9,15 +9,13 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
     for epoch in range(1, config.SRRESNET_EPOCHES + 1):
         epoch_train_loss = 0
 
+        # print(torch.cuda.memory_allocated())
+
         for batch_idx, (original_img, train_img) in enumerate(train_loader):
             original_img = original_img.to(DEVICE)
             train_img = train_img.to(DEVICE)
 
-            if DEVICE.type == "cuda":
-                with torch.cuda.amp.autocast():
-                    fake_img = model(train_img)
-                    loss = criterion(fake_img, original_img)
-            else:
+            with torch.cuda.amp.autocast():
                 fake_img = model(train_img)
                 loss = criterion(fake_img, original_img)
 
@@ -44,11 +42,13 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
     return loss_hist
 
 
-def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, d_optimizer, scaler, plot_tensors,
+def train_SRGAN(generator, discriminator, train_loader, Loss, g_optimizer, d_optimizer, scaler, plot_tensors,
                 config,
                 DEVICE="cpu"):
     generator.train()
     discriminator.train()
+
+    criterion = Loss(DEVICE=DEVICE)
 
     loss_hist = {"train g loss": [], "train d loss": []}
 
@@ -60,17 +60,14 @@ def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, 
             original_img = original_img.to(DEVICE)
             train_img = train_img.to(DEVICE)
 
-            if DEVICE.type == "cuda":
-                with torch.cuda.amp.autocast():
-                    fake_img = generator(train_img)
-                    fake_pred = discriminator(fake_img)
-                    real_pred = discriminator(original_img)
-                    g_loss, d_loss = criterion(fake_img, original_img, real_pred, fake_pred)
-            else:
+            with torch.cuda.amp.autocast():
                 fake_img = generator(train_img)
-                fake_pred = discriminator(fake_img)
-                real_pred = discriminator(original_img)
-                g_loss, d_loss = criterion(fake_img, original_img, real_pred, fake_pred)
+                g_fake_pred = discriminator(fake_img)
+                d_fake_pred = discriminator(fake_img.detach())
+                real_pred = discriminator(original_img.detach())
+                g_loss, d_loss = criterion(fake_img, original_img, real_pred, g_fake_pred, d_fake_pred)
+
+            # print(torch.cuda.max_memory_allocated())
 
             g_optimizer.zero_grad()
             scaler.scale(g_loss).backward()
@@ -97,7 +94,7 @@ def train_SRGAN(generator, discriminator, train_loader, criterion, g_optimizer, 
         loss_hist["train d loss"].append(epoch_d_train_loss)
 
         print("-------------------------------------------------")
-        print("Epoch: {} Generator loss: {:.8f} & Discriminator loss: (:.8f)".format(epoch,
+        print("Epoch: {} Generator loss: {:.8f} & Discriminator loss: {:.8f}".format(epoch,
                                                                                      epoch_g_train_loss,
                                                                                      epoch_d_train_loss))
         print("-------------------------------------------------")

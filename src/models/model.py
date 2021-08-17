@@ -19,7 +19,7 @@ class Residual_Block(nn.Module):
 
 
 class Generator(nn.Module):
-    def __init__(self):
+    def __init__(self, n_residual=2):
         super(Generator, self).__init__()
 
         self.initial = nn.Sequential(
@@ -27,7 +27,7 @@ class Generator(nn.Module):
             nn.PReLU()
         )
 
-        self.residual_blocks = nn.Sequential(*[Residual_Block() for n in range(3)])
+        self.residual_blocks = nn.Sequential(*[Residual_Block() for n in range(n_residual)])
 
         self.after = nn.Sequential(
             nn.Conv2d(64, 64, kernel_size=3, padding=1),
@@ -54,28 +54,25 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self):
+    def __init__(self, features=16):
         super(Discriminator, self).__init__()
 
         self.network = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3),
+            nn.Conv2d(3, features, kernel_size=3),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(64, 64, kernel_size=3),
-            nn.BatchNorm2d(64),
+            nn.Conv2d(features, features, kernel_size=3),
+            nn.BatchNorm2d(features),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(64, 128, kernel_size=3),
-            nn.BatchNorm2d(128),
+            nn.Conv2d(features, features * 2, kernel_size=3),
+            nn.BatchNorm2d(features * 2),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(128, 128, kernel_size=3),
-            nn.BatchNorm2d(128),
+            nn.Conv2d(features * 2, features * 2, kernel_size=3),
+            nn.BatchNorm2d(features * 2),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(128, 256, kernel_size=3),
-            nn.BatchNorm2d(256),
+            nn.Conv2d(features * 2, features * 4, kernel_size=3),
+            nn.BatchNorm2d(features * 4),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Flatten(),
-            nn.Linear(1024, 1024),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(1024, 1),
         )
 
     def forward(self, x):

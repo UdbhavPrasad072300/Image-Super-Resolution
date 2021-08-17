@@ -12,10 +12,7 @@ class Loss(nn.Module):
     def __init__(self, DEVICE="cpu"):
         super(Loss, self).__init__()
 
-        self.perceptual_loss = None
-        self.content_loss = None
-
-        self.model_layers = torchvision.models.vgg.vgg19(pretrained=True).features.eval().to(DEVICE)
+        self.model_layers = torchvision.models.vgg.vgg19(pretrained=True).features.eval().half().to(DEVICE)
         self.content_layers = ["3",
                                "8",
                                "17",
@@ -27,15 +24,15 @@ class Loss(nn.Module):
 
         self.bce_loss = nn.BCEWithLogitsLoss()
 
-    def forward(self, sr_image, original_image, real_pred, fake_pred):
+    def forward(self, sr_image, original_image, real_pred, g_fake_pred, d_fake_pred):
 
-        self.perceptual_loss = get_perceptual_loss(sr_image, original_image)
-        self.content_loss = self.get_content_loss(sr_image, original_image)
+        perceptual_loss = get_perceptual_loss(sr_image, original_image)
+        content_loss = self.get_content_loss(sr_image, original_image)
 
-        g_total_loss = 0.006 * self.content_loss + (10 ^ -3) * self.get_adversarial_loss(fake_pred, False) + \
-                       self.perceptual_loss
+        g_total_loss = (10 ^ -3) * self.get_adversarial_loss(g_fake_pred, False) + perceptual_loss + \
+                       (0.006 * content_loss)
 
-        d_total_loss = self.get_adversarial_loss(real_pred, True) + self.get_adversarial_loss(fake_pred, False)
+        d_total_loss = self.get_adversarial_loss(real_pred, True) + self.get_adversarial_loss(d_fake_pred, False)
 
         return g_total_loss, d_total_loss
 

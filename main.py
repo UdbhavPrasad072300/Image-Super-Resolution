@@ -43,8 +43,6 @@ if __name__ == "__main__":
 
     # Training Objects
 
-    criterion = Loss(DEVICE=DEVICE)
-
     G_optimizer = torch.optim.Adam(G.parameters(), lr=config.G_LR)
     D_optimizer = torch.optim.Adam(D.parameters(), lr=config.D_LR)
 
@@ -52,19 +50,19 @@ if __name__ == "__main__":
 
     # Test Model
 
-    G_out, D_out = test_model_inputs(G, D, DEVICE=DEVICE)
+    # G_out, D_out = test_model_inputs(G, D, DEVICE=DEVICE)
 
-    logger.info("Generator Output Size: {}".format(G_out.size()))
-    logger.info("Discriminator Output Size: {}".format(D_out.size()))
+    # logger.info("Generator Output Size: {}".format(G_out.size()))
+    # logger.info("Discriminator Output Size: {}".format(D_out.size()))
 
     # Train
 
-    G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
-                                  DEVICE=DEVICE)
+    #G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
+    #                              DEVICE=DEVICE)
 
     torch.save(G, './models/sr_resnet-g.pt')
 
-    SRGAN_loss_hist = train_SRGAN(G, D, train_loader, criterion, G_optimizer, D_optimizer, scaler, plot_tensors,
+    SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors,
                                   config,
                                   DEVICE=DEVICE)
 
@@ -72,8 +70,8 @@ if __name__ == "__main__":
 
     plot_sequential(G_loss_hist["train loss"], "Epoch", "Train SR-ResNet Loss")
 
-    plot_sequential(G_loss_hist["train g loss"], "Epoch", "Train Generator Loss")
-    plot_sequential(G_loss_hist["train d loss"], "Epoch", "Train Discriminator Loss")
+    plot_sequential(SRGAN_loss_hist["train g loss"], "Epoch", "Train Generator Loss")
+    plot_sequential(SRGAN_loss_hist["train d loss"], "Epoch", "Train Discriminator Loss")
 
     # Save
 
