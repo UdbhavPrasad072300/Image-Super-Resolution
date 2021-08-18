@@ -6,7 +6,7 @@ def test_model_inputs(G, D, DEVICE="cpu"):
         G.eval().to(DEVICE)
         D.eval().to(DEVICE)
 
-        tensor = torch.rand(2, 3, 256, 256).to(DEVICE)
+        tensor = torch.rand(2, 3, 64, 64).to(DEVICE)
 
         G_out = G(tensor)
         D_out = D(G_out)

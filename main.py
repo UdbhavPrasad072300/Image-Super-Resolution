@@ -50,21 +50,21 @@ if __name__ == "__main__":
 
     # Test Model
 
-    # G_out, D_out = test_model_inputs(G, D, DEVICE=DEVICE)
+    G_out, D_out = test_model_inputs(G, D, DEVICE=DEVICE)
 
-    # logger.info("Generator Output Size: {}".format(G_out.size()))
-    # logger.info("Discriminator Output Size: {}".format(D_out.size()))
+    print("Generator Output Size: {}".format(G_out.size()))
+    print("Discriminator Output Size: {}".format(D_out.size()))
 
     # Train
 
-    #G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
-    #                              DEVICE=DEVICE)
+    G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
+                                     DEVICE=DEVICE)
 
     torch.save(G, './models/sr_resnet-g.pt')
 
-    SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors,
-                                  config,
-                                  DEVICE=DEVICE)
+    G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors,
+                                        config,
+                                        DEVICE=DEVICE)
 
     # Plot Train Stats
 

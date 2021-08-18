@@ -39,7 +39,7 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
         print("Epoch: {} Train mean loss: {:.8f}".format(epoch, epoch_train_loss))
         print("-------------------------------------------------")
 
-    return loss_hist
+    return model, loss_hist
 
 
 def train_SRGAN(generator, discriminator, train_loader, Loss, g_optimizer, d_optimizer, scaler, plot_tensors,
@@ -99,4 +99,4 @@ def train_SRGAN(generator, discriminator, train_loader, Loss, g_optimizer, d_opt
                                                                                      epoch_d_train_loss))
         print("-------------------------------------------------")
 
-    return loss_hist
+    return generator, discriminator, loss_hist

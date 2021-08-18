@@ -54,25 +54,47 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self, features=16):
+    def __init__(self, features=32):
         super(Discriminator, self).__init__()
 
         self.network = nn.Sequential(
             nn.Conv2d(3, features, kernel_size=3),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(features, features, kernel_size=3),
+
+            nn.Conv2d(features, features, kernel_size=3, padding=1, stride=2),
             nn.BatchNorm2d(features),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(features, features * 2, kernel_size=3),
+
+            nn.Conv2d(features, features * 2, kernel_size=3, padding=1),
             nn.BatchNorm2d(features * 2),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(features * 2, features * 2, kernel_size=3),
+
+            nn.Conv2d(features * 2, features * 2, kernel_size=3, padding=1, stride=2),
             nn.BatchNorm2d(features * 2),
             nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(features * 2, features * 4, kernel_size=3),
+
+            nn.Conv2d(features * 2, features * 4, kernel_size=3, padding=1),
             nn.BatchNorm2d(features * 4),
             nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features * 4, features * 4, kernel_size=3, padding=1, stride=2),
+            nn.BatchNorm2d(features * 4),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features * 4, features * 8, kernel_size=3, padding=1),
+            nn.BatchNorm2d(features * 8),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features * 8, features * 8, kernel_size=3, padding=1, stride=2),
+            nn.BatchNorm2d(features * 8),
+            nn.LeakyReLU(0.2, inplace=True),
+
             nn.Flatten(),
+
+            nn.Linear(65536, 1024),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(1024, 1),
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
