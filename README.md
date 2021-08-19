@@ -5,7 +5,7 @@ Enhancing Image Resolution with SRGAN
 To Run: 
 
 ```bash
-python main.py
+python start_training_cars_dataset.py
 ```
 
 ## What is Run?
