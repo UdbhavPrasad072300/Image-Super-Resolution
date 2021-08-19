@@ -89,11 +89,13 @@ class Discriminator(nn.Module):
             nn.BatchNorm2d(features * 8),
             nn.LeakyReLU(0.2, inplace=True),
 
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(features * 8, features * 16, kernel_size=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(features * 16, 1, kernel_size=1),
+
             nn.Flatten(),
 
-            nn.Linear(65536, 1024),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(1024, 1),
             nn.Sigmoid(),
         )
 
