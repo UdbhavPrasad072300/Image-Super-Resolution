@@ -60,7 +60,7 @@ if __name__ == "__main__":
     G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
                                      DEVICE=DEVICE)
 
-    torch.save(G, './models/sr_resnet-g_cars-dataset.pt')
+    torch.save(G.state_dict(), './models/sr_resnet-g_cars-dataset.pt')
 
     G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors,
                                         config,
@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     # Save
 
-    torch.save(G, './models/sr-g_cars-dataset.pt')
-    torch.save(D, './models/sr-d_cars-dataset.pt')
+    torch.save(G.state_dict(), "./models/sr-g_cars-dataset.pt")
+    torch.save(D.state_dict(), './models/sr-d_cars-dataset.pt')
 
     print("Program has Ended")
