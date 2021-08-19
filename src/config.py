@@ -1,6 +1,6 @@
 SEED = 0
 
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 
 G_LR = 1e-4
 D_LR = 1e-4

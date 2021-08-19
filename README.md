@@ -2,7 +2,7 @@
 
 Enhancing Image Resolution with SRGAN
 
-To Run: 
+To Start Training Run: 
 
 ```bash
 python start_training_cars_dataset.py
