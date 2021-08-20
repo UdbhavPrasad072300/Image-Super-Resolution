@@ -3,12 +3,12 @@ import logging
 import torch
 
 import src.config as config
-from src.data.dataset import get_dataloader
+from src.data.dataset import get_cars_dataloader, get_isr_dataloader
 from src.models.model import Generator, Discriminator
 from src.models.train import train_generator, train_SRGAN
 from src.models.loss import Loss, get_perceptual_loss
 from src.models.test import test_model_inputs
-from src.visualization.visualize import plot_sequential, plot_tensors
+from src.visualization.visualize import plot_sequential, plot_tensors, display_image
 
 logging.basicConfig(filename="./logs/app.log", format='%(asctime)s %(message)s', filemode='w')
 logger = logging.getLogger()
@@ -28,10 +28,19 @@ if __name__ == "__main__":
     train_folder = "./data/raw/cars_test/cars_test/"
     test_folder = "./data/raw/cars_train/cars_train/"
 
-    train_loader, test_loader = get_dataloader(train_folder, test_folder, batch_size=config.BATCH_SIZE)
+    train_loader, test_loader = get_cars_dataloader(train_folder, test_folder, batch_size=config.BATCH_SIZE)
+
+    #train_loader, test_loader = get_isr_dataloader(batch_size=config.BATCH_SIZE)
 
     logger.info("Train Dataset Length: {}".format(len(train_loader)))
     logger.info("Test Dataset Length: {}".format(len(test_loader)))
+
+    # Test Data
+
+    for batch_idx, (original_img, train_img) in enumerate(train_loader):
+        print("Original Image Size: {}".format(original_img.size()))
+        print("Train Image Size: {}".format(train_img.size()))
+        break
 
     # Model
 
@@ -57,12 +66,15 @@ if __name__ == "__main__":
 
     # Train
 
-    G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors, config,
+    G, G_loss_hist = train_generator(G, train_loader, get_perceptual_loss, G_optimizer, scaler, plot_tensors,
+                                     display_image,
+                                     config,
                                      DEVICE=DEVICE)
 
     torch.save(G.state_dict(), './models/sr_resnet-g_cars-dataset.pt')
 
-    G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors,
+    G, D, SRGAN_loss_hist = train_SRGAN(G, D, train_loader, Loss, G_optimizer, D_optimizer, scaler, plot_tensors, \
+                                        display_image,
                                         config,
                                         DEVICE=DEVICE)
 

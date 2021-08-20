@@ -29,7 +29,7 @@ class Loss(nn.Module):
         perceptual_loss = get_perceptual_loss(sr_image, original_image)
         content_loss = self.get_content_loss(sr_image, original_image)
 
-        g_total_loss = (10 ^ -3) * self.get_adversarial_loss(g_fake_pred, False) + perceptual_loss + \
+        g_total_loss = ((10 ^ -3) * self.get_adversarial_loss(g_fake_pred, False)) + perceptual_loss + \
                        (0.006 * content_loss)
 
         d_total_loss = self.get_adversarial_loss(real_pred, True) + self.get_adversarial_loss(d_fake_pred, False)

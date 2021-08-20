@@ -1,7 +1,8 @@
 import torch
 
 
-def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tensors, config, DEVICE="cpu"):
+def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tensors, display_image, config,
+                    DEVICE="cpu"):
     model.train()
 
     loss_hist = {"train loss": []}
@@ -27,9 +28,12 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
             epoch_train_loss += loss.item()
 
             if batch_idx + 1 == len(train_loader):
-                plot_tensors(fake_img.to(original_img.dtype))
-                plot_tensors(original_img)
-                plot_tensors(train_img)
+                display_image(fake_img.to(original_img.dtype)[0])  # .to(original_img.dtype))
+                display_image(original_img[0])
+                display_image(train_img[0])
+                #plot_tensors(fake_img.to(original_img.dtype))
+                #plot_tensors(original_img)
+                #plot_tensors(train_img)
 
         epoch_train_loss = epoch_train_loss / len(train_loader)
 
@@ -43,6 +47,7 @@ def train_generator(model, train_loader, criterion, optimizer, scaler, plot_tens
 
 
 def train_SRGAN(generator, discriminator, train_loader, Loss, g_optimizer, d_optimizer, scaler, plot_tensors,
+                display_image,
                 config,
                 DEVICE="cpu"):
     generator.train()
@@ -83,9 +88,12 @@ def train_SRGAN(generator, discriminator, train_loader, Loss, g_optimizer, d_opt
             epoch_d_train_loss += d_loss.item()
 
             if batch_idx + 1 == len(train_loader):
-                plot_tensors(fake_img.to(original_img.dtype))
-                plot_tensors(original_img)
-                plot_tensors(train_img)
+                display_image(fake_img.to(original_img.dtype)[0])#.to(original_img.dtype))
+                display_image(original_img[0])
+                display_image(train_img[0])
+                #plot_tensors(fake_img.to(original_img.dtype))
+                #plot_tensors(original_img)
+                #plot_tensors(train_img)
 
         epoch_g_train_loss = epoch_g_train_loss / len(train_loader)
         epoch_d_train_loss = epoch_d_train_loss / len(train_loader)
