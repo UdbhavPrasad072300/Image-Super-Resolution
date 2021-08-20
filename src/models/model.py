@@ -41,7 +41,9 @@ class Generator(nn.Module):
             nn.Conv2d(64, 256, kernel_size=3, padding=1),
             nn.PixelShuffle(2),
             nn.PReLU(),
-            nn.Conv2d(64, 3, kernel_size=9, padding=4)
+            nn.Conv2d(64, 3, kernel_size=9, padding=4),
+
+            # nn.Tanh(),
         )
 
     def forward(self, x):
@@ -93,10 +95,7 @@ class Discriminator(nn.Module):
             nn.Conv2d(features * 8, features * 16, kernel_size=1),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Conv2d(features * 16, 1, kernel_size=1),
-
             nn.Flatten(),
-
-            nn.Sigmoid(),
         )
 
     def forward(self, x):
